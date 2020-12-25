@@ -60,10 +60,7 @@ def data_preprocess(
     # Load data
     #########################
 
-    if file_name.endswith("stock.csv"):
-        index = 'Idx'
-    else:
-        index = 'admissionid'
+    index = 'Idx'
 
     # Load csv
     print("Loading data...\n")
@@ -118,8 +115,8 @@ def data_preprocess(
     #     print(f"Changed padding value to: {padding_value}\n")
     
     # Output initialization
-    loaded_data = np.empty([no, max_seq_len, dim])  # Shape:[no, max_seq_len, dim]
-    loaded_data.fill(padding_value)
+    output = np.empty([no, max_seq_len, dim])  # Shape:[no, max_seq_len, dim]
+    output.fill(padding_value)
     time = []
 
     # For each uniq id
@@ -139,10 +136,10 @@ def data_preprocess(
 
         # Pad data to `max_seq_len`
         if curr_no >= max_seq_len:
-            loaded_data[i, :, :] = curr_data[:max_seq_len, 1:]  # Shape: [1, max_seq_len, dim]
+            output[i, :, :] = curr_data[:max_seq_len, 1:]  # Shape: [1, max_seq_len, dim]
             time.append(max_seq_len)
         else:
-            loaded_data[i, :curr_no, :] = curr_data[:, 1:]  # Shape: [1, max_seq_len, dim]
+            output[i, :curr_no, :] = curr_data[:, 1:]  # Shape: [1, max_seq_len, dim]
             time.append(curr_no)
 
     return output, time, params, max_seq_len, padding_value

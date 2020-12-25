@@ -8,3 +8,4 @@ torch==1.7.0
 joblib==0.17.0
 matplotlib==3.3.3
 seaborn==0.11.1
+tensorboard==2.4.0

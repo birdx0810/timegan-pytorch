@@ -21,7 +21,7 @@ from metrics.metric_utils import (
 )
 
 from models.timegan.timegan import TimeGAN
-from model.timegan.utils import timegan_trainer, timegan_generator
+from models.timegan.utils import timegan_trainer, timegan_generator
 
 def main(args):
     ##############################################
@@ -54,7 +54,7 @@ def main(args):
     # TensorBoard directory
     tensorboard_path = os.path.abspath("./tensorboard")
     if not os.path.exists(tensorboard_path):
-        raise ValueError(f"TensorBoard file not found at {tensorboard_path}.")
+        os.makedirs(model_dir, exist_ok=True)
 
     print(f"\nCode directory:\t\t\t{code_dir}")
     print(f"Data directory:\t\t\t{data_path}")
@@ -86,7 +86,7 @@ def main(args):
     # Load and preprocess data for model
     #########################
 
-    data_path = "data/public_data/stock.csv"
+    data_path = "data/stock.csv"
     X, T, _, args.max_seq_len, args.padding_value = data_preprocess(
         data_path, args.max_seq_len
     )
@@ -111,8 +111,8 @@ def main(args):
 
     model = TimeGAN(args)
     if args.is_train == True:
-        timegan_trainer(model, train_data, train_time, args)
-    generated_data = timegan_generator(model, train_time, args)
+        timegan_trainer(model, train_data, train_time, model_dir, args)
+    generated_data = timegan_generator(model, train_time, model_dir, args)
     generated_time = train_time
 
     # Log end time
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     # Inputs for the main function
     parser = argparse.ArgumentParser()
 
-    # Global Arguments
+    # Experiment Arguments
     parser.add_argument(
         '--device',
         choices=['cuda', 'cpu'],
@@ -229,20 +229,15 @@ if __name__ == "__main__":
         type=str2bool,
         default=True)
     parser.add_argument(
-        '--feat_pred_no',
-        default=2,
-        type=int)
-    parser.add_argument(
         '--seed',
         default=0,
         type=int)
+    parser.add_argument(
+        '--feat_pred_no',
+        default=2,
+        type=int)
 
     # Data Arguments
-    parser.add_argument(
-        '--data_name',
-        choices=['stock'],
-        default='stock'
-        type=str)
     parser.add_argument(
         '--max_seq_len',
         default=100,
@@ -282,11 +277,6 @@ if __name__ == "__main__":
         default=0.15,
         type=float)
     parser.add_argument(
-        '--loss_fn',
-        choices=['timegan'],
-        default='timegan',
-        type=str)
-    parser.add_argument(
         '--optimizer',
         choices=['adam'],
         default='adam',
@@ -294,14 +284,6 @@ if __name__ == "__main__":
     parser.add_argument(
         '--learning_rate',
         default=1e-3,
-        type=float)
-    parser.add_argument(
-        '--noise_multiplier',
-        default=0.3,
-        type=float)
-    parser.add_argument(
-        '--max_grad_norm',
-        default=1.0,
         type=float)
 
     args = parser.parse_args()
