@@ -18,7 +18,8 @@ metrics/                      # the folder holding the metric functions for eval
   ├ general_rnn.py            # the model for fitting the dataset during TSTR evaluation
   ├ metric_utils.py           # the main function for evaluating TSTR
   └ visualization.py          # PCA and t-SNE implementation for time series taken from the original repo
-models
+models/                       # the code for the model
+output/                       # the output of the model
 main.py                       # the main code for training and evaluating TSTR of the model
 requirements.txt              # requirements for running code
 run.sh                        # the bash script for running model

@@ -1,13 +1,8 @@
 #!/bin/bash
 train=true
 export TZ="GMT-8"
-mkdir -p logs
 
 # Experiment variables
-model='timegan'
-opt='adam'
-
-# # Experiment variables for testing
 exp="test"
 
 # Iteration variables
@@ -30,5 +25,5 @@ python main.py \
 --hidden_dim        20 \
 --num_layers        3 \
 --dis_thresh        0.15 \
---optimizer         $opt \
+--optimizer         adam \
 --learning_rate     1e-3 \

@@ -41,25 +41,18 @@ def main(args):
     data_file_name = os.path.basename(data_path)
 
     ## Output directories
-    out_dir = os.path.abspath(f"./models/{args.exp}/")
+    out_dir = os.path.abspath(f"./output/{args.exp}/")
     if not os.path.exists(out_dir):
         os.makedirs(out_dir, exist_ok=True)
-
-    # model directory
-    model_dir = os.path.join(out_dir, "model")
-    if os.path.exists(model_dir):
-        shutil.rmtree(model_dir)
-    os.makedirs(model_dir, exist_ok=True)
     
     # TensorBoard directory
     tensorboard_path = os.path.abspath("./tensorboard")
     if not os.path.exists(tensorboard_path):
-        os.makedirs(model_dir, exist_ok=True)
+        os.makedirs(tensorboard_path, exist_ok=True)
 
     print(f"\nCode directory:\t\t\t{code_dir}")
     print(f"Data directory:\t\t\t{data_path}")
     print(f"Output directory:\t\t{out_dir}")
-    print(f"  └ Model output:\t\t{model_dir}")
     print(f"TensorBoard directory:\t\t{tensorboard_path}\n")
 
     ##############################################
@@ -111,8 +104,8 @@ def main(args):
 
     model = TimeGAN(args)
     if args.is_train == True:
-        timegan_trainer(model, train_data, train_time, model_dir, args)
-    generated_data = timegan_generator(model, train_time, model_dir, args)
+        timegan_trainer(model, train_data, train_time, out_dir, args)
+    generated_data = timegan_generator(model, train_time, out_dir, args)
     generated_time = train_time
 
     # Log end time
@@ -126,17 +119,17 @@ def main(args):
     #########################
     
     # Save splitted data and generated data
-    with open(f"{model_dir}/train_data.pickle", "wb") as fb:
+    with open(f"{out_dir}/train_data.pickle", "wb") as fb:
         pickle.dump(train_data, fb)
-    with open(f"{model_dir}/train_time.pickle", "wb") as fb:
+    with open(f"{out_dir}/train_time.pickle", "wb") as fb:
         pickle.dump(train_time, fb)
-    with open(f"{model_dir}/test_data.pickle", "wb") as fb:
+    with open(f"{out_dir}/test_data.pickle", "wb") as fb:
         pickle.dump(test_data, fb)
-    with open(f"{model_dir}/test_time.pickle", "wb") as fb:
+    with open(f"{out_dir}/test_time.pickle", "wb") as fb:
         pickle.dump(test_time, fb)
-    with open(f"{model_dir}/fake_data.pickle", "wb") as fb:
+    with open(f"{out_dir}/fake_data.pickle", "wb") as fb:
         pickle.dump(generated_data, fb)
-    with open(f"{model_dir}/fake_time.pickle", "wb") as fb:
+    with open(f"{out_dir}/fake_time.pickle", "wb") as fb:
         pickle.dump(generated_time, fb)
 
     #########################
