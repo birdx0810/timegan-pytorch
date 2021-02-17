@@ -6,9 +6,9 @@ export TZ="GMT-8"
 exp="test"
 
 # Iteration variables
-emb_epochs=20
-sup_epochs=20
-gan_epochs=20
+emb_epochs=50
+sup_epochs=50
+gan_epochs=50
 
 python main.py \
 --device            cuda \
