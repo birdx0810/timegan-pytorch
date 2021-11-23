@@ -440,14 +440,16 @@ class TimeGAN(torch.nn.Module):
         Returns:
             - D_loss: the adversarial loss
         """
-        # Discriminator
+        # Real
         H = self.embedder(X, T).detach()
-        H_hat = self.supervisor(H, T).detach()
+        
+        # Generator
         E_hat = self.generator(Z, T).detach()
+        H_hat = self.supervisor(E_hat, T).detach()
 
         # Forward Pass
         Y_real = self.discriminator(H, T)            # Encoded original data
-        Y_fake = self.discriminator(H_hat, T)        # Output of supervisor
+        Y_fake = self.discriminator(H_hat, T)        # Output of generator + supervisor
         Y_fake_e = self.discriminator(E_hat, T)      # Output of generator
 
         D_loss_real = torch.nn.functional.binary_cross_entropy_with_logits(Y_real, torch.ones_like(Y_real))
@@ -467,10 +469,9 @@ class TimeGAN(torch.nn.Module):
         Returns:
             - G_loss: the generator's loss
         """
-        # Supervised Forward Pass
+        # Supervisor Forward Pass
         H = self.embedder(X, T)
         H_hat_supervise = self.supervisor(H, T)
-        X_tilde = self.recovery(H, T)
 
         # Generator Forward Pass
         E_hat = self.generator(Z, T)
